@@ -14,7 +14,7 @@
 const int doorUpPin = 3;
 const int doorDownPin = 5;
 
-//define the location / timezone for dusk2dawn
+//define the location / timezone for dusk2dawn (this is Colton, SD)
 Dusk2Dawn colton(43.789369, -96.927453, -6);
 
 //Temporarily define how long to run the motor 

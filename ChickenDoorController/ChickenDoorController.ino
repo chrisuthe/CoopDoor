@@ -7,12 +7,18 @@
 #include <Dusk2Dawn.h>
 #include <eeprom.h>
 #include <Wire.h>
-
+#include <eBtn.h>
 
 
 //Define the pins connecting to the motor driver
 const int doorUpPin = 3;
 const int doorDownPin = 5;
+const int btnPin = 2;
+eBtn btn = eBtn(btnPin);
+
+
+//Are We Debugging?
+const bool debug = true;
 
 //define the location / timezone for dusk2dawn (this is Colton, SD)
 Dusk2Dawn colton(43.789369, -96.927453, -6);
@@ -20,7 +26,6 @@ Dusk2Dawn colton(43.789369, -96.927453, -6);
 //Temporarily define how long to run the motor 
 //TODO: Substitute a better way of starting/stopping the opening and closing [[Sensors??]]
 int runTime = 5000;
-bool debug = true;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
@@ -55,5 +60,7 @@ void loop() {
 		Serial.println(riseTime); 
 		Serial.println(setTime);
 	}
+	raiseDoor();
+	lowerDoor();
 	delay(runTime);
 }

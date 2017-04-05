@@ -67,4 +67,5 @@ typedef void *__builtin_va_list;
 #undef PSTR
 #define PSTR(string_literal) ((const PROGMEM char *)(string_literal))
 #include "ChickenDoorController.ino"
+#include "MotorControl.ino"
 #endif

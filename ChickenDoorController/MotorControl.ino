@@ -3,12 +3,7 @@ void raiseDoor() {
 	digitalWrite(doorUpPin, HIGH);
 	digitalWrite(doorDownPin, LOW);
 	if (debug) {
-		Serial.println("Door Up");
-	}
-	delay(10000);
-	digitalWrite(doorUpPin, LOW);
-	if (debug) {
-		Serial.println("Stop Up");
+		Serial.println("Door Raising");
 	}
 }
 
@@ -17,11 +12,15 @@ void lowerDoor() {
 	digitalWrite(doorDownPin, HIGH);
 	digitalWrite(doorUpPin, LOW);
 	if (debug) {
-		Serial.println("Door Down");
+		Serial.println("Door Lowering");
 	}
-	delay(10000);
+}
+
+//Stop the Door
+void stopDoor() {
+	digitalWrite(doorUpPin, LOW);
 	digitalWrite(doorDownPin, LOW);
 	if (debug) {
-		Serial.println("Stop Down");
+		Serial.println("Door Stop");
 	}
 }

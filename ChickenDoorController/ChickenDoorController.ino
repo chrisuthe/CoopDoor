@@ -7,14 +7,12 @@
 #include <Dusk2Dawn.h>
 #include <eeprom.h>
 #include <Wire.h>
-#include <eBtn.h>
 
 
 //Define the pins connecting to the motor driver
 const int doorUpPin = 3;
 const int doorDownPin = 5;
-const int btnPin = 2;
-eBtn btn = eBtn(btnPin);
+//const int btnPin = 2;
 
 
 //Are We Debugging?
@@ -61,6 +59,10 @@ void loop() {
 		Serial.println(setTime);
 	}
 	raiseDoor();
+	delay(10000);
+	stopDoor();
+	delay(2000);
 	lowerDoor();
-	delay(runTime);
+	delay(10000);
+	stopDoor();
 }

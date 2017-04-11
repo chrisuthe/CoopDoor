@@ -1,7 +1,7 @@
 //Wind the Door Up
 void raiseDoor() {
-	digitalWrite(doorUpPin, HIGH);
-	digitalWrite(doorDownPin, LOW);
+	digitalWrite(DoorUpMotorPin, HIGH);
+	digitalWrite(doorDownMotorPin, LOW);
 	if (debug) {
 		Serial.println("Door Raising");
 	}
@@ -9,8 +9,8 @@ void raiseDoor() {
 
 //Wind The Door Down
 void lowerDoor() {
-	digitalWrite(doorDownPin, HIGH);
-	digitalWrite(doorUpPin, LOW);
+	digitalWrite(doorDownMotorPin, HIGH);
+	digitalWrite(DoorUpMotorPin, LOW);
 	if (debug) {
 		Serial.println("Door Lowering");
 	}
@@ -18,8 +18,8 @@ void lowerDoor() {
 
 //Stop the Door
 void stopDoor() {
-	digitalWrite(doorUpPin, LOW);
-	digitalWrite(doorDownPin, LOW);
+	digitalWrite(DoorUpMotorPin, LOW);
+	digitalWrite(doorDownMotorPin, LOW);
 	if (debug) {
 		Serial.println("Door Stop");
 	}

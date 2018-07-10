@@ -51,11 +51,22 @@ void setup() {
 		while (1);
 	}
 	rtc.begin();
+	// Lets just set the date/time every time we upload a debug build, since we know the RTC module is good with a good battery.
+	if (debug)
+	{
+		rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+	}
 	Serial.println("Checking RTC is Running");
 	if (rtc.lostPower()) {
 		Serial.println("RTC lost power, lets set the time!");
 		// following line sets the RTC to the date & time this sketch was compiled
-		//rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+		rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+		if (debug) {
+			Serial.println("Set Date/Time");
+			rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+			delay(2000);
+		}
+
 		// This line sets the RTC with an explicit date & time, for example to set
 		// January 21, 2014 at 3am you would call:
 		// rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));

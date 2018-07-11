@@ -21,20 +21,19 @@ const int doorUpSensorPin = 2;
 const int doorDownMotorPin = 5;
 const int DoorUpMotorPin = 3;
 const int builtInLED = 13;
-
-//Define RTC
-RTC_DS3231 rtc;
-char daysOfTheWeek[7][12] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+int currentMins;
+int sunrise;
+int sunset;
+DateTime now;
 
 //Are We Debugging?
 const bool debug = true;
 
+//Define RTC
+RTC_DS3231 rtc;
+
 //define the location / timezone for dusk2dawn (this is Colton, SD)
 Dusk2Dawn colton(43.789369, -96.927453, -6);
-
-//Temporarily define how long to run the motor 
-//TODO: Substitute a better way of starting/stopping the opening and closing [[Sensors??]]
-int runTime = 5000;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
@@ -64,12 +63,7 @@ void setup() {
 		if (debug) {
 			Serial.println("Set Date/Time");
 			rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-			delay(2000);
 		}
-
-		// This line sets the RTC with an explicit date & time, for example to set
-		// January 21, 2014 at 3am you would call:
-		// rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
 	}
 	//switches setup
 	pinMode(doorUpSensorPin, INPUT_PULLUP);
@@ -85,28 +79,47 @@ void setup() {
 
 // the loop function runs over and over again until power down or reset
 void loop() {
+	delay(2000);
 	if (debug){
+		Serial.println();
 		Serial.println("LoopHead");
 	}
 	//Get the Date/Time from the RTC
-	DateTime now = rtc.now();
-	//Get Sunrise/Sunset for the current year/month/day (THE TRUE is passing in Daylight Savings Time!
-	/*TODO: Check to see if we're in Daylight savings time!*/
-	int sunrise = colton.sunrise(now.year(), now.month(), now.day(), true);
-	int sunset = colton.sunset(now.year(), now.month(), now.day(), true);
-	//the int's sunrise and sunset now contain seconds from midnight 
-	char riseTime[6];
-	char setTime[6];
-	//Dusk2Dawn can spit out character arrays of "readable" times, cool for debugging, not useful in code.
-	Dusk2Dawn::min2str(riseTime, sunrise);
-	Dusk2Dawn::min2str(setTime, sunset);
+	now = rtc.now();
+	//Get Sunrise/Sunset for the current year/month/day as INT's that equate to minutes from midnight that he sunrise/sunset will occur (THE TRUE is passing in Daylight Savings Time!)
+	sunrise = colton.sunrise(now.year(), now.month(), now.day(), true);
+	sunset = colton.sunset(now.year(), now.month(), now.day(), true);
 	if (debug) {
-		Serial.println(riseTime); 
-		Serial.println(setTime);
+		Serial.println();
+		Serial.print(now.year());
+		Serial.print('/');
+		Serial.print(now.month());
+		Serial.print('/');
+		Serial.print(now.day());
+		Serial.print(" - ");
+		Serial.print(now.hour());
+		Serial.print(':');
+		Serial.print(now.minute());
+		Serial.print(':');
+		Serial.print(now.second());
 	}
+	
+	//Lets get add the "now" Minutes and "now" hours*60 to see how many minutes from midnight we are
+	currentMins = ((now.hour()) * 60) + (now.minute());
+	Serial.println(currentMins);
+
+	//lets start comparisons, if the door should be up....
+	if (sunrise < currentMins && currentMins < sunset)
+	{
+		Serial.println("Door should be up");
+	}
+
+	else
+	{
+		Serial.println("Door should be down");
+	}
+
 	/* Loop ToDo: 
-	 * Figure out how many seconds from midnight we are right now using the RTC
-	 * Subtract the number of seconds to sunrise and sunset from that result to see if we should be up or down
 	 * Compare door state to what it should be
 	 * If states don't match raise or lower the door until the switches indicate it's closed or open
 	 * Limit motor run time to ??? (this is probably going to be in the open / close subroutines?
@@ -115,21 +128,9 @@ void loop() {
 	 * Add a temperature sensor
 	 * If the temp sensor is below 30*F the door does not open unless override is used. Do not clear override if temp is below (causing door to not open)
 	 */
-	/* This is just temporary RTC Testing Code*/
-	Serial.print(now.year(), DEC);
-	Serial.print('/');
-	Serial.print(now.month(), DEC);
-	Serial.print('/');
-	Serial.print(now.day(), DEC);
-	Serial.print(" (");
-	Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-	Serial.print(") ");
-	Serial.print(now.hour(), DEC);
-	Serial.print(':');
-	Serial.print(now.minute(), DEC);
-	Serial.print(':');
-	Serial.print(now.second(), DEC);
-	Serial.println();
+
+
+
 	int DoorUp = digitalRead(doorUpSensorPin);
 	/* This is just temporary switch debug code*/
 	if (DoorUp == LOW)
@@ -144,4 +145,5 @@ void loop() {
 		("Door Not Open all the way");
 		raiseDoor();
 	}
+	
 }

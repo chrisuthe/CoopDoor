@@ -80,43 +80,58 @@ void setup() {
 // the loop function runs over and over again until power down or reset
 void loop() {
 	delay(2000);
-	if (debug){
-		Serial.println();
-		Serial.println("LoopHead");
-	}
 	//Get the Date/Time from the RTC
 	now = rtc.now();
 	//Get Sunrise/Sunset for the current year/month/day as INT's that equate to minutes from midnight that he sunrise/sunset will occur (THE TRUE is passing in Daylight Savings Time!)
 	sunrise = colton.sunrise(now.year(), now.month(), now.day(), true);
 	sunset = colton.sunset(now.year(), now.month(), now.day(), true);
 	if (debug) {
-		Serial.println();
-		Serial.print(now.year());
-		Serial.print('/');
+    Serial.println("-- -- -- -- -- -- -- --");
+    Serial.print("Currently: ");
 		Serial.print(now.month());
 		Serial.print('/');
 		Serial.print(now.day());
+    Serial.print('/');
+    Serial.print(now.year());
 		Serial.print(" - ");
 		Serial.print(now.hour());
 		Serial.print(':');
 		Serial.print(now.minute());
 		Serial.print(':');
 		Serial.print(now.second());
+    Serial.println();
 	}
 	
 	//Lets get add the "now" Minutes and "now" hours*60 to see how many minutes from midnight we are
 	currentMins = ((now.hour()) * 60) + (now.minute());
-	Serial.println(currentMins);
-
+	//Debug minutes from midnight for sunrise/now/sunset
+	if (debug) {
+  	Serial.println();
+  	Serial.print("Now:");
+    Serial.print(currentMins);
+    Serial.println();
+    Serial.print("Sunrise:");
+    Serial.print(sunrise);
+    Serial.println();
+    Serial.print("Sunset:");
+    Serial.print(sunset);
+    Serial.println();
+	}
 	//lets start comparisons, if the door should be up....
 	if (sunrise < currentMins && currentMins < sunset)
 	{
+    //Door Should Be Up
+    if (debug) {
 		Serial.println("Door should be up");
+    }
 	}
 
 	else
 	{
+    //Door should be Down
+    if (debug) {
 		Serial.println("Door should be down");
+    }
 	}
 
 	/* Loop ToDo: 
@@ -135,15 +150,19 @@ void loop() {
 	/* This is just temporary switch debug code*/
 	if (DoorUp == LOW)
 	{
+    if (debug) {
 		Serial.println("Door Opened All The Way");
+    }
 		stopDoor();
 		digitalWrite(builtInLED, HIGH);
 	}
 	else
 	{
 		digitalWrite(builtInLED, LOW);
-		("Door Not Open all the way");
+		if (debug) {
+		    Serial.println("Door Not Open all the way");
+        }
 		raiseDoor();
 	}
-	
+	//EndMainLoop
 }

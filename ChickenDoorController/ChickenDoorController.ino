@@ -6,7 +6,7 @@
 */
 #include <math.h>
 #include <Dusk2Dawn.h>
-#include <eeprom.h>
+#include <EEPROM.h>
 #include <Wire.h>
 //#include <OneWire.h>
 //#include <DallasTemperature.h>
